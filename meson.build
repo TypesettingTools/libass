@@ -31,31 +31,10 @@ if cc.get_argument_syntax() == 'gcc'
 endif
 link_args = cc.get_supported_link_arguments(['-prefer-non-pic'])
 
-check_headers = [
-    'dlfcn.h',
-    'iconv.h',
-    'inttypes.h',
-    'memory.h',
-    'stdbool.h',
-    'stdint.h',
-    'stdlib.h',
-    'string.h',
-    'strings.h',
-    'sys/stat.h',
-    'sys/types.h',
-    'unistd.h'
-]
-
 check_functions = [
     'strdup',
     'strndup'
 ]
-
-m_dep = cc.find_library('m', required: false)
-if m_dep.found()
-    deps += m_dep
-    conf.set('HAVE_LIBM', 1)
-endif
 
 iconv_dep = cc.find_library('iconv', required: false)
 if iconv_dep.found()
@@ -193,12 +172,6 @@ if get_option('require-system-font-provider') and not fontconfig and not directw
     error('''Either DirectWrite (on Windows), CoreText (on OSX), or Fontconfig (Linux, other) is required.
 If you really want to compile without a system font provider, set -Drequire-system-font-provider=false''')
 endif
-
-foreach name: check_headers
-    if cc.has_header(name)
-        conf.set('HAVE_@0@'.format(name.to_upper().underscorify()), 1)
-    endif
-endforeach
 
 foreach name: check_functions
     if cc.has_function(name)
