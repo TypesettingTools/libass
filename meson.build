@@ -109,10 +109,15 @@ if freetype_dep.found()
     conf.set('CONFIG_FREETYPE', 1)
 endif
 
-if get_option('default_library') != 'static' and host_machine.system() == 'windows'
-    fribidi_visibility = '-DFRIBIDI_ENTRY=__declspec(dllexport)'
+have_visibility_hidden = cc.has_argument('-fvisibility=hidden')
+if have_visibility_hidden
+    fribidi_visibility = '-DFRIBIDI_ENTRY=extern __attribute__ ((visibility ("default")))'
 else
-    fribidi_visibility = '-DFRIBIDI_ENTRY=extern'
+    if get_option('default_library') != 'static' and host_machine.system() == 'windows'
+        fribidi_visibility = '-DFRIBIDI_ENTRY=__declspec(dllexport)'
+    else
+        fribidi_visibility = '-DFRIBIDI_ENTRY=extern'
+    endif
 endif
 fribidi_dep = dependency('fribidi', version: '>= 0.19.0',
                          fallback: ['fribidi', 'libfribidi_dep'],
