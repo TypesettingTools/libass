@@ -7,7 +7,7 @@ option('directwrite', type: 'feature', description: 'DirectWrite support (win32 
 option('coretext', type: 'feature', description: 'CoreText support (OSX only)')
 option('asm', type: 'feature', description: 'ASM support (better performance)')
 
-option('require-system-font-provider', type: 'boolean', value: true, 
+option('require-system-font-provider', type: 'boolean', value: true,
        description: 'disallow compilation if no system font provider was found')
-option('large-tiles', type: 'boolean', value: false, 
+option('large-tiles', type: 'boolean', value: false,
        description: 'use larger tiles in the rasterizer (better performance, slightly worse quality)')
