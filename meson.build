@@ -21,7 +21,7 @@ if cc.get_argument_syntax() == 'gcc'
         '-Wextra',
         '-Wno-sign-compare',
         '-Wno-unused-parameter',
-        '-Werror-implicit-function-declaration', 
+        '-Werror-implicit-function-declaration',
         '-Wstrict-prototypes',
         '-Wpointer-arith',
         '-Wredundant-decls',
@@ -107,7 +107,7 @@ endif
 
 # Misc deps
 # Version info omitted for freetype2 because its versioning is weird and the meson port doesn't handle it properly
-freetype_dep = dependency('freetype', 
+freetype_dep = dependency('freetype',
                           fallback: ['freetype2', 'freetype_dep'])
 if freetype_dep.found()
     deps += freetype_dep
@@ -213,7 +213,7 @@ endif
 
 # libass.pc
 pkg = import('pkgconfig')
-pkg.generate(libass, 
+pkg.generate(libass,
              name: 'libass',
              description: 'LibASS is an SSA/ASS subtitles rendering library',
              subdirs: meson.project_name())
