@@ -52,12 +52,22 @@ if enable_asm
     libass_src += nasm_gen.process(src_intel)
 endif
 
-libass = library('ass', libass_src, config_h,
-                 c_args: fribidi_visibility,
-                 install: true,
-                 link_args: link_args,
-                 include_directories: incs,
-                 dependencies: deps)
+
+if enable_statically
+    libass = shared_library('ass', libass_src, config_h,
+                            c_args: fribidi_visibility,
+                            install: true,
+                            link_args: link_args,
+                            include_directories: incs,
+                            dependencies: deps)
+else
+    libass = library('ass', libass_src, config_h,
+                     c_args: fribidi_visibility,
+                     install: true,
+                     link_args: link_args,
+                     include_directories: incs,
+                     dependencies: deps)
+endif
 
 libass_dep = declare_dependency(link_with: libass,
                                 include_directories: incs,

@@ -6,6 +6,14 @@ project('libass', 'c', license: 'ISC',
 conf = configuration_data()
 deps = []
 
+enable_statically = false
+statically_condition = get_option('compile-statically')
+compile_condition = host_machine.system() == 'windows' and get_option('default_library') == 'static'
+
+if statically_condition and compile_condition
+    enable_statically = true
+endif
+
 if host_machine.system() == 'darwin'
     add_languages('objc')
 endif

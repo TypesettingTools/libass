@@ -1,5 +1,6 @@
 option('test', type: 'boolean', value: false, description: 'enable test program (requires libpng)')
 option('profile', type: 'boolean', value: false, description: 'enable profiling program')
+option('compile-statically', type: 'boolean', value: false, description: 'Create a dll with all dependencies inside')
 
 option('fontconfig', type: 'feature', value: 'disabled', description: 'fontconfig support')
 option('harfbuzz', type: 'feature', description: 'HarfBuzz support')
