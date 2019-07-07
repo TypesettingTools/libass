@@ -69,10 +69,10 @@ endif
 
 if enable_asm
     # Architecture check
-    if host_machine.cpu_family() == 'x86'
+    if host_machine.cpu_family() == 'x86' and not (host_machine.cpu() == 'x86_64')
         bittype = '32'
         nasm_args += '-DARCH_X86_64=0'
-    elif host_machine.cpu_family() == 'x86_64'
+    elif host_machine.cpu_family() == 'x86_64' or host_machine.cpu() == 'x86_64'
         bittype = '64'
         nasm_args += ['-DARCH_X86_64=1', '-DPIC']
     else
