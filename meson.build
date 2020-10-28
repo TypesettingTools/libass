@@ -116,12 +116,10 @@ endif
 
 have_visibility_hidden = cc.has_argument('-fvisibility=hidden')
 if have_visibility_hidden
-    fribidi_visibility = '-DFRIBIDI_ENTRY=extern __attribute__ ((visibility ("default")))'
+    fribidi_visibility = '-DFRIBIDI_ENTRY=__attribute__ ((visibility ("default")))'
 else
-    if get_option('default_library') != 'static' and host_machine.system() == 'windows'
-        fribidi_visibility = '-DFRIBIDI_ENTRY=__declspec(dllexport)'
-    else
-        fribidi_visibility = '-DFRIBIDI_ENTRY=extern'
+    if host_machine.system() == 'windows' and get_option('default_library') == 'static'
+        fribidi_visibility = '-DFRIBIDI_LIB_STATIC'
     endif
 endif
 fribidi_dep = dependency('fribidi', version: '>= 0.19.0',
