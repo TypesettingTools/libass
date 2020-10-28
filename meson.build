@@ -1,5 +1,5 @@
 project('libass', 'c', license: 'ISC',
-        meson_version: '>= 0.49.0',
+        meson_version: '>= 0.55.0',
         default_options: ['c_std=gnu99'],
         version: '0.15.0')
 
