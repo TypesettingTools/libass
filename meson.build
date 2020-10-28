@@ -1,7 +1,7 @@
 project('libass', 'c', license: 'ISC',
         meson_version: '>= 0.49.0',
         default_options: ['c_std=gnu99'],
-        version: '0.14.0')
+        version: '0.15.0')
 
 conf = configuration_data()
 deps = []
