@@ -1,6 +1,6 @@
 project('libass', 'c', license: 'ISC',
         meson_version: '>= 0.55.0',
-        default_options: ['c_std=gnu99'],
+        default_options: ['c_std=gnu99', 'buildtype=debugoptimized'],
         version: '0.15.0')
 
 conf = configuration_data()
