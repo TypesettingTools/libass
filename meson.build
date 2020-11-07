@@ -106,8 +106,7 @@ else
 endif
 
 # Misc deps
-# Version info omitted for freetype2 because its versioning is weird and the meson port doesn't handle it properly
-freetype_dep = dependency('freetype',
+freetype_dep = dependency('freetype', version: '>= 2.2.1',
                           fallback: ['freetype2', 'freetype_dep'])
 if freetype_dep.found()
     deps += freetype_dep
