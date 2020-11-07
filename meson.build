@@ -67,23 +67,27 @@ if enable_asm
     endif
 endif
 
-if enable_asm
-    # Architecture check
-    if host_machine.cpu_family() == 'x86'
-        bittype = '32'
-        nasm_args += '-DARCH_X86_64=0'
-    elif host_machine.cpu_family() == 'x86_64'
-        bittype = '64'
-        nasm_args += ['-DARCH_X86_64=1', '-DPIC']
-    else
-        warning('ASM functions are not available on non-intel machines; disabling.')
-        enable_asm = false
-    endif
+# Architecture check
+if host_machine.cpu_family() == 'x86'
+    bittype = '32'
+    nasm_args += '-DARCH_X86_64=0'
+    intel = true
+elif host_machine.cpu_family() == 'x86_64'
+    bittype = '64'
+    nasm_args += ['-DARCH_X86_64=1', '-DPIC']
+    intel = true
+else
+    intel = false
 endif
 
-if not enable_asm
+if enable_asm and not intel
+    warning('ASM functions are not available on non-intel machines; disabling.')
+    enable_asm = false
+elif (not enable_asm) and intel
     warning('Install nasm-2.10 or later for a significantly faster libass build.')
-else
+endif
+
+if enable_asm
     conf.set('CONFIG_ASM', 1)
 
     if host_machine.system() == 'windows'
