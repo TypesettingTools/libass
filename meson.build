@@ -44,6 +44,8 @@ endif
 iconv_dep = cc.find_library('iconv', required: false)
 if iconv_dep.found()
     deps += iconv_dep
+endif
+if iconv_dep.found() or cc.has_function('iconv_open')
     conf.set('CONFIG_ICONV', 1)
 endif
 
