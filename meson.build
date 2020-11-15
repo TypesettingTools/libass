@@ -6,10 +6,6 @@ project('libass', 'c', license: 'ISC',
 conf = configuration_data()
 deps = []
 
-if host_machine.system() == 'darwin'
-    add_languages('objc')
-endif
-
 if get_option('large-tiles')
     conf.set('CONFIG_LARGE_TILES', 1)
 endif
