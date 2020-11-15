@@ -1,6 +1,6 @@
 project('libass', 'c', license: 'ISC',
         meson_version: '>= 0.55.0',
-        default_options: ['c_std=gnu99', 'buildtype=debugoptimized'],
+        default_options: ['c_std=gnu99', 'buildtype=debugoptimized', 'warning_level=2'],
         version: '0.15.0')
 
 conf = configuration_data()
@@ -17,8 +17,6 @@ endif
 cc = meson.get_compiler('c')
 if cc.get_argument_syntax() == 'gcc'
     cflags = [
-        '-Wall',
-        '-Wextra',
         '-Wno-sign-compare',
         '-Wno-unused-parameter',
         '-Werror-implicit-function-declaration',
