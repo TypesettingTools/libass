@@ -106,8 +106,7 @@ if enable_asm
 endif
 
 # Misc deps
-freetype_dep = dependency('freetype', version: '>= 2.2.1',
-                          fallback: ['freetype2', 'freetype2_dep'])
+freetype_dep = dependency('freetype', version: '>= 2.2.1')
 if freetype_dep.found()
     deps += freetype_dep
     conf.set('CONFIG_FREETYPE', 1)
@@ -122,15 +121,19 @@ else
     endif
 endif
 fribidi_dep = dependency('fribidi', version: '>= 0.19.0',
-                         fallback: ['fribidi', 'libfribidi_dep'],
                          default_options: ['docs=false', 'tests=false'])
 if fribidi_dep.found()
     deps += fribidi_dep
     conf.set('CONFIG_FRIBIDI', 1)
 endif
 
+harfbuzz_options = []
+if host_machine.system() == 'windows'
+    harfbuzz_options += ['glib=disabled', 'gobject=disabled']
+endif
 harfbuzz_dep = dependency('harfbuzz', version: '>= 0.9.5', required: get_option('harfbuzz'),
-                          fallback: ['harfbuzz', 'libharfbuzz_dep'])
+                          fallback: 'harfbuzz',
+                          default_options: harfbuzz_options)
 if harfbuzz_dep.found()
     deps += harfbuzz_dep
     conf.set('CONFIG_HARFBUZZ', 1)
@@ -151,8 +154,7 @@ if fontconfig_dep.found()
 endif
 
 if get_option('test')
-    deps += dependency('libpng', version: '>= 1.2.0',
-                       fallback: ['libpng', 'png_dep'])
+    deps += dependency('libpng', version: '>= 1.2.0')
     conf.set('CONFIG_LIBPNG', 1)
 endif
 
