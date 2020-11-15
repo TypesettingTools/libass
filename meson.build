@@ -111,7 +111,7 @@ endif
 
 # Misc deps
 freetype_dep = dependency('freetype', version: '>= 2.2.1',
-                          fallback: ['freetype2', 'freetype_dep'])
+                          fallback: ['freetype2', 'freetype2_dep'])
 if freetype_dep.found()
     deps += freetype_dep
     conf.set('CONFIG_FREETYPE', 1)
