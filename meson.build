@@ -112,13 +112,9 @@ if freetype_dep.found()
     conf.set('CONFIG_FREETYPE', 1)
 endif
 
-have_visibility_hidden = cc.has_argument('-fvisibility=hidden')
-if have_visibility_hidden
-    fribidi_visibility = '-DFRIBIDI_ENTRY=__attribute__ ((visibility ("default")))'
-else
-    if host_machine.system() == 'windows' and get_option('default_library') == 'static'
-        fribidi_visibility = '-DFRIBIDI_LIB_STATIC'
-    endif
+fribidi_visibility = ''
+if host_machine.system() == 'windows' and get_option('default_library') == 'static'
+    fribidi_visibility = '-DFRIBIDI_LIB_STATIC'
 endif
 fribidi_dep = dependency('fribidi', version: '>= 0.19.0',
                          default_options: ['docs=false', 'tests=false'])
