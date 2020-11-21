@@ -123,12 +123,12 @@ if fribidi_dep.found()
     conf.set('CONFIG_FRIBIDI', 1)
 endif
 
-harfbuzz_options = []
+harfbuzz_options = ['tests=disabled']
 if host_machine.system() == 'windows'
     harfbuzz_options += ['glib=disabled', 'gobject=disabled']
 endif
 harfbuzz_dep = dependency('harfbuzz', version: '>= 0.9.5', required: get_option('harfbuzz'),
-                          fallback: 'harfbuzz',
+                          fallback: ['harfbuzz', 'libharfbuzz_dep'],
                           default_options: harfbuzz_options)
 if harfbuzz_dep.found()
     deps += harfbuzz_dep
