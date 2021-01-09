@@ -106,7 +106,8 @@ if enable_asm
 endif
 
 # Misc deps
-freetype_dep = dependency('freetype', version: '>= 2.2.1')
+freetype_dep = dependency('freetype', version: '>= 2.2.1',
+                          default_options: ['default_library=' + get_option('default_library')]) # workaround for https://github.com/mesonbuild/meson/issues/8047
 if freetype_dep.found()
     deps += freetype_dep
     conf.set('CONFIG_FREETYPE', 1)
