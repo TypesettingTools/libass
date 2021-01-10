@@ -187,6 +187,11 @@ if get_option('require-system-font-provider') and not fontconfig and not directw
 If you really want to compile without a system font provider, set -Drequire-system-font-provider=false''')
 endif
 
+# dirent.h
+if host_machine.system() == 'windows' and not cc.has_header('dirent.h')
+    deps += subproject('tronkko-dirent').get_variable('tronkko_dirent_dep')
+endif
+
 foreach name: check_functions
     # workaround for https://github.com/mesonbuild/meson/issues/3672
     if cc.has_function(name) and cc.has_header_symbol('string.h', name)
