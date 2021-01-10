@@ -126,9 +126,9 @@ if fribidi_dep.found()
     conf.set('CONFIG_FRIBIDI', 1)
 endif
 
-harfbuzz_options = ['tests=disabled']
-if host_machine.system() == 'windows'
-    harfbuzz_options += ['glib=disabled', 'gobject=disabled', 'fontconfig=disabled', 'cairo=disabled']
+harfbuzz_options = ['tests=disabled', 'fontconfig=disabled', 'cairo=disabled', 'gobject=disabled']
+if host_machine.system() == 'windows' or host_machine.system() == 'darwin'
+    harfbuzz_options += ['glib=disabled']
 endif
 harfbuzz_dep = dependency('harfbuzz', version: '>= 0.9.5', required: get_option('harfbuzz'),
                           fallback: ['harfbuzz', 'libharfbuzz_dep'],
