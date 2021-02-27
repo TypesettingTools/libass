@@ -6,9 +6,7 @@ project('libass', 'c', license: 'ISC',
 conf = configuration_data()
 deps = []
 
-if get_option('large-tiles')
-    conf.set('CONFIG_LARGE_TILES', 1)
-endif
+# Compiler setup
 
 cc = meson.get_compiler('c')
 if cc.get_argument_syntax() == 'gcc'
@@ -25,10 +23,27 @@ if cc.get_argument_syntax() == 'gcc'
 endif
 link_args = cc.get_supported_link_arguments(['-prefer-non-pic'])
 
+# Configuration
+
+if get_option('large-tiles')
+    conf.set('CONFIG_LARGE_TILES', 1)
+endif
+
+conf.set('PACKAGE_NAME', 'libass')
+conf.set('PACKAGE_VERSION', meson.project_version())
+
 check_functions = [
     'strdup',
     'strndup'
 ]
+
+foreach name: check_functions
+    if cc.has_function(name)
+        conf.set('HAVE_@0@'.format(name.to_upper()), 1)
+    endif
+endforeach
+
+# Dependencies
 
 m_dep = cc.find_library('m', required: false)
 if m_dep.found()
@@ -43,69 +58,6 @@ if iconv_dep.found() or cc.has_function('iconv_open')
     conf.set('CONFIG_ICONV', 1)
 endif
 
-# ASM
-nasm_args = []
-nasm = find_program('nasm', required: get_option('asm'))
-enable_asm = nasm.found()
-
-if enable_asm
-    # NASM version check
-    nasm_r = run_command(nasm, '-v')
-    out = nasm_r.stdout().strip().split()
-    if out[1].to_lower() == 'version'
-        if out[2].version_compare('< 2.10')
-            warning('nasm is too old (found @0@); ASM functions are disabled.'.format(out[2]))
-            enable_asm = false
-        endif
-    else
-        warning('Unexpected nasm version string: @0@; disabling.'.format(nasm_r.stdout()))
-        enable_asm = false
-    endif
-endif
-
-# Architecture check
-if host_machine.cpu_family() == 'x86'
-    bittype = '32'
-    nasm_args += '-DARCH_X86_64=0'
-    intel = true
-elif host_machine.cpu_family() == 'x86_64'
-    bittype = '64'
-    nasm_args += ['-DARCH_X86_64=1', '-DPIC']
-    intel = true
-else
-    intel = false
-endif
-
-if enable_asm and not intel
-    warning('ASM functions are not available on non-intel machines; disabling.')
-    enable_asm = false
-elif (not enable_asm) and intel
-    warning('Install nasm-2.10 or later for a significantly faster libass build.')
-endif
-
-if enable_asm
-    conf.set('CONFIG_ASM', 1)
-
-    if host_machine.system() == 'windows'
-        nasm_args += ['-f', 'win' + bittype]
-        if bittype == '64'
-            nasm_args += ['-DHAVE_ALIGNED_STACK=1']
-        else
-            nasm_args += ['-DHAVE_ALIGNED_STACK=0', '-DPREFIX']
-        endif
-    elif host_machine.system() == 'darwin'
-        nasm_args += ['-f', 'macho' + bittype, '-DPREFIX', '-DHAVE_ALIGNED_STACK=1']
-    else
-        nasm_args += ['-f', 'elf' + bittype, '-DHAVE_ALIGNED_STACK=1']
-    endif
-
-    nasm_args += ['-DHAVE_CPUNOP=0', '-Dprivate_prefix=ass']
-    nasm_args += ['-I', meson.current_source_dir() / 'libass' + '/', '-o', '@OUTPUT@', '@INPUT@']
-
-    nasm_gen = generator(nasm, output: '@BASENAME@.o', arguments: nasm_args)
-endif
-
-# Misc deps
 freetype_dep = dependency('freetype', version: '>= 2.10.92', required: false)
 if not freetype_dep.found()
     freetype_sp = subproject('freetype2',
@@ -196,14 +148,66 @@ if host_machine.system() == 'windows' and not cc.has_header('dirent.h')
     deps += subproject('tronkko-dirent').get_variable('tronkko_dirent_dep')
 endif
 
-foreach name: check_functions
-    if cc.has_function(name)
-        conf.set('HAVE_@0@'.format(name.to_upper()), 1)
-    endif
-endforeach
+# ASM
 
-conf.set('PACKAGE_NAME', 'libass')
-conf.set('PACKAGE_VERSION', meson.project_version())
+nasm_args = []
+nasm = find_program('nasm', required: get_option('asm'))
+enable_asm = nasm.found()
+
+if enable_asm
+    # NASM version check
+    nasm_r = run_command(nasm, '-v')
+    out = nasm_r.stdout().strip().split()
+    if out[1].to_lower() == 'version'
+        if out[2].version_compare('< 2.10')
+            warning('nasm is too old (found @0@); ASM functions are disabled.'.format(out[2]))
+            enable_asm = false
+        endif
+    else
+        warning('Unexpected nasm version string: @0@; disabling.'.format(nasm_r.stdout()))
+        enable_asm = false
+    endif
+endif
+
+# Architecture check
+if host_machine.cpu_family() == 'x86'
+    bittype = '32'
+    nasm_args += '-DARCH_X86_64=0'
+    intel = true
+elif host_machine.cpu_family() == 'x86_64'
+    bittype = '64'
+    nasm_args += '-DARCH_X86_64=1'
+    intel = true
+else
+    intel = false
+endif
+
+if enable_asm and not intel
+    warning('ASM functions are not available on non-intel machines; disabling.')
+    enable_asm = false
+elif (not enable_asm) and intel
+    warning('Install nasm-2.10 or later for a significantly faster libass build.')
+endif
+
+if enable_asm
+    conf.set('CONFIG_ASM', 1)
+
+    if host_machine.system() == 'windows'
+        nasm_args += ['-f', 'win' + bittype]
+        if bittype == '32'
+            nasm_args += '-DPREFIX'
+        endif
+    elif host_machine.system() == 'darwin'
+        nasm_args += ['-f', 'macho' + bittype, '-DPREFIX', '-DSTACK_ALIGNMENT=16']
+    else
+        nasm_args += ['-f', 'elf' + bittype, '-DSTACK_ALIGNMENT=16']
+    endif
+
+    nasm_args += '-Dprivate_prefix=ass'
+    nasm_args += ['-I', meson.current_source_dir() / 'libass' + '/', '-o', '@OUTPUT@', '@INPUT@']
+
+    nasm_gen = generator(nasm, output: '@BASENAME@.o', arguments: nasm_args)
+endif
 
 config_h = configure_file(output: 'config.h', configuration: conf)
 
