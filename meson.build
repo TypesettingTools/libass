@@ -44,7 +44,7 @@ check_functions = [
 ]
 
 foreach name: check_functions
-    if cc.has_function(name)
+    if cc.has_function(name) # TODO: this is probably still wrong
         conf.set('HAVE_@0@'.format(name.to_upper()), 1)
     endif
 endforeach
