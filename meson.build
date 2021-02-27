@@ -1,6 +1,7 @@
 project('libass', 'c', license: 'ISC',
         meson_version: '>= 0.55.0',
-        default_options: ['c_std=c99', 'buildtype=debugoptimized', 'warning_level=2'],
+        # cpp_std specified because meson compiler options are currently global
+        default_options: ['c_std=c99', 'cpp_std=c++11', 'buildtype=debugoptimized', 'warning_level=2'],
         version: '0.15.0')
 
 conf = configuration_data()
