@@ -154,8 +154,8 @@ nasm_args = []
 nasm = find_program('nasm', required: get_option('asm'))
 enable_asm = nasm.found()
 
+# NASM version check
 if enable_asm
-    # NASM version check
     nasm_r = run_command(nasm, '-v')
     out = nasm_r.stdout().strip().split()
     if out[1].to_lower() == 'version'
@@ -169,7 +169,7 @@ if enable_asm
     endif
 endif
 
-# Architecture check
+# Architecture check - TODO x32
 if host_machine.cpu_family() == 'x86'
     bittype = '32'
     nasm_args += '-DARCH_X86_64=0'
@@ -189,19 +189,28 @@ elif (not enable_asm) and intel
     warning('Install nasm-2.10 or later for a significantly faster libass build.')
 endif
 
+# System check
 if enable_asm
-    conf.set('CONFIG_ASM', 1)
-
-    if host_machine.system() == 'windows'
+    host_system = host_machine.system()
+    if host_system == 'windows'
         nasm_args += ['-f', 'win' + bittype]
         if bittype == '32'
             nasm_args += '-DPREFIX'
         endif
-    elif host_machine.system() == 'darwin'
+    elif host_system == 'darwin'
         nasm_args += ['-f', 'macho' + bittype, '-DPREFIX', '-DSTACK_ALIGNMENT=16']
-    else
+    elif host_system == 'linux' or host_system == 'sunos' or host_system == 'haiku'
         nasm_args += ['-f', 'elf' + bittype, '-DSTACK_ALIGNMENT=16']
+    elif host_system == 'dragonfly' or host_system.endswith('bsd')
+        nasm_args += ['-f', 'elf' + bittype]
+    else
+        warning('Please contact libass upstream to figure out if ASM support for your platform can be added. In the meantime, disabling.')
+        enable_asm = false
     endif
+endif
+
+if enable_asm
+    conf.set('CONFIG_ASM', 1)
 
     nasm_args += '-Dprivate_prefix=ass'
     nasm_args += ['-I', meson.current_source_dir() / 'libass' + '/', '-o', '@OUTPUT@', '@INPUT@']
