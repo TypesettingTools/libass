@@ -28,18 +28,18 @@ jobs:
           #  buildtype: release,
           #  args: ''
           #}
-          #- {
-          #  name: Ubuntu Debug,
-          #  os: ubuntu-latest,
-          #  buildtype: debugoptimized,
-          #  args: ''
-          #}
-          #- {
-          #  name: Ubuntu Release,
-          #  os: ubuntu-latest,
-          #  buildtype: release,
-          #  args: ''
-          #}
+          - {
+            name: Ubuntu Debug,
+            os: ubuntu-latest,
+            buildtype: debugoptimized,
+            args: ''
+          }
+          - {
+            name: Ubuntu Release,
+            os: ubuntu-latest,
+            buildtype: release,
+            args: ''
+          }
           #- {
           #  name: macOS Debug,
           #  os: macos-latest,
