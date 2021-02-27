@@ -9,6 +9,7 @@ deps = []
 # Compiler setup
 
 cc = meson.get_compiler('c')
+
 if cc.get_argument_syntax() == 'gcc'
     cflags = [
         '-Wno-sign-compare',
@@ -21,6 +22,11 @@ if cc.get_argument_syntax() == 'gcc'
     ]
     add_project_arguments(cc.get_supported_arguments(cflags), language: 'c')
 endif
+
+if host_machine.system() != 'windows'
+    add_project_arguments('-D_GNU_SOURCE', language: 'c')
+endif
+
 link_args = cc.get_supported_link_arguments(['-prefer-non-pic'])
 
 # Configuration
