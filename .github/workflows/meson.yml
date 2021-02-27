@@ -19,15 +19,15 @@ jobs:
             os: windows-latest,
             msvc: true,
             buildtype: release,
-            args: '-Ddefault_library=static --force-fallback-for=zlib,harfbuzz'
+            args: '-Ddefault_library=static --wrap-mode=forcefallback'
           }
-          #- {
-          #  name: Windows MinGW Release,
-          #  os: windows-latest,
-          #  msvc: false,
-          #  buildtype: release,
-          #  args: ''
-          #}
+          - {
+            name: Windows MinGW Release,
+            os: windows-latest,
+            msvc: false,
+            buildtype: release,
+            args: ''
+          }
           - {
             name: Ubuntu Debug,
             os: ubuntu-latest,
