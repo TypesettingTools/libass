@@ -239,5 +239,4 @@ endif
 pkg = import('pkgconfig')
 pkg.generate(libass,
              name: 'libass',
-             description: 'LibASS is an SSA/ASS subtitles rendering library',
-             subdirs: meson.project_name())
+             description: 'LibASS is an SSA/ASS subtitles rendering library')
