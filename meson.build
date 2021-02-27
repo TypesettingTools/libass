@@ -193,8 +193,7 @@ if host_machine.system() == 'windows' and not cc.has_header('dirent.h')
 endif
 
 foreach name: check_functions
-    # workaround for https://github.com/mesonbuild/meson/issues/3672
-    if cc.has_function(name) and cc.has_header_symbol('string.h', name)
+    if cc.has_function(name)
         conf.set('HAVE_@0@'.format(name.to_upper()), 1)
     endif
 endforeach
