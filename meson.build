@@ -77,9 +77,8 @@ if freetype_dep.found()
     conf.set('CONFIG_FREETYPE', 1)
 endif
 
-fribidi_visibility = ''
 if host_machine.system() == 'windows' and get_option('default_library') == 'static'
-    fribidi_visibility = '-DFRIBIDI_LIB_STATIC'
+    add_project_arguments('-DFRIBIDI_LIB_STATIC', language: 'c')
 endif
 fribidi_dep = dependency('fribidi', version: '>= 0.19.0',
                          default_options: ['docs=false', 'tests=false'])

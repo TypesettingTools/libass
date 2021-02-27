@@ -53,7 +53,6 @@ if enable_asm
 endif
 
 libass = library('ass', libass_src, config_h,
-                 c_args: fribidi_visibility,
                  install: true,
                  link_args: link_args,
                  include_directories: incs,
