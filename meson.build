@@ -24,8 +24,17 @@ if cc.get_argument_syntax() == 'gcc'
     add_project_arguments(cc.get_supported_arguments(cflags), language: 'c')
 endif
 
-if host_machine.system() != 'windows'
+test_args = []
+
+if host_machine.system() == 'linux'
+    test_args += '-D_GNU_SOURCE'
     add_project_arguments('-D_GNU_SOURCE', language: 'c')
+elif host_machine.system() == 'darwin'
+    test_args += '-D_DARWIN_C_SOURCE'
+    add_project_arguments('-D_DARWIN_C_SOURCE', language: 'c')
+elif cc.get_id() != 'msvc'
+    test_args += '-D_POSIX_C_SOURCE=200809L'
+    add_project_arguments('-D_POSIX_C_SOURCE=200809L', language: 'c')
 endif
 
 link_args = cc.get_supported_link_arguments(['-prefer-non-pic'])
@@ -39,13 +48,13 @@ endif
 conf.set('PACKAGE_NAME', 'libass')
 conf.set('PACKAGE_VERSION', meson.project_version())
 
-check_functions = [
+str_check_functions = [
     'strdup',
     'strndup'
 ]
 
-foreach name: check_functions
-    if cc.has_function(name) # TODO: this is probably still wrong
+foreach name: str_check_functions
+    if cc.has_function(name) and cc.has_header_symbol('string.h', name, args: test_args) # might be wrong with MSVC?
         conf.set('HAVE_@0@'.format(name.to_upper()), 1)
     endif
 endforeach
