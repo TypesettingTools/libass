@@ -54,7 +54,6 @@ endif
 
 libass = library('ass', libass_src, config_h,
                  install: true,
-                 link_args: link_args,
                  include_directories: incs,
                  dependencies: deps)
 

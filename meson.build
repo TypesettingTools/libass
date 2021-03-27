@@ -37,8 +37,6 @@ elif cc.get_id() != 'msvc'
     add_project_arguments('-D_POSIX_C_SOURCE=200809L', language: 'c')
 endif
 
-link_args = cc.get_supported_link_arguments(['-prefer-non-pic'])
-
 # Configuration
 
 if get_option('large-tiles')
