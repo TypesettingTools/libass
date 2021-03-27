@@ -54,7 +54,7 @@ str_check_functions = [
 ]
 
 foreach name: str_check_functions
-    if cc.has_function(name) and cc.has_header_symbol('string.h', name, args: test_args) # might be wrong with MSVC?
+    if cc.has_function(name) and cc.has_header_symbol('string.h', name, args: test_args)
         conf.set('HAVE_@0@'.format(name.to_upper()), 1)
     endif
 endforeach
