@@ -46,6 +46,8 @@ endif
 conf.set('PACKAGE_NAME', 'libass')
 conf.set('PACKAGE_VERSION', meson.project_version())
 
+conf.set('CONFIG_SOURCEVERSION', '"meson, on or after: ' + meson.project_version() + '"')
+
 str_check_functions = [
     'strdup',
     'strndup'
