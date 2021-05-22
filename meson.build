@@ -74,14 +74,7 @@ if iconv_dep.found() or cc.has_function('iconv_open')
     conf.set('CONFIG_ICONV', 1)
 endif
 
-freetype_dep = dependency('freetype2', version: '>= 2.10.92', required: false)
-if not freetype_dep.found()
-    freetype_sp = subproject('freetype2',
-                             default_options: ['default_library=' + get_option('default_library'), # workaround for https://github.com/mesonbuild/meson/issues/8047
-                                               'zlib=builtin',
-                                               'png=enabled'])
-    freetype_dep = freetype_sp.get_variable('freetype2_dep')
-endif
+freetype_dep = dependency('freetype2', version: '>= 2.10.92', default_options: ['default_library=' + get_option('default_library')]) # workaround for https://github.com/mesonbuild/meson/issues/8047
 if freetype_dep.found()
     deps += freetype_dep
     conf.set('CONFIG_FREETYPE', 1)
