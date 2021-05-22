@@ -74,7 +74,8 @@ if iconv_dep.found() or cc.has_function('iconv_open')
     conf.set('CONFIG_ICONV', 1)
 endif
 
-freetype_dep = dependency('freetype2', version: '>= 2.10.92', default_options: ['default_library=' + get_option('default_library')]) # workaround for https://github.com/mesonbuild/meson/issues/8047
+freetype_dep = dependency('freetype2',version: '>= 2.10.92',
+                          default_options: ['default_library=' + get_option('default_library'), 'harfbuzz=disabled']) # workaround for https://github.com/mesonbuild/meson/issues/8047
 if freetype_dep.found()
     deps += freetype_dep
     conf.set('CONFIG_FREETYPE', 1)
@@ -92,7 +93,7 @@ endif
 
 harfbuzz_options = ['tests=disabled', 'fontconfig=disabled', 'cairo=disabled', 'gobject=disabled']
 if host_machine.system() == 'windows' or host_machine.system() == 'darwin'
-    harfbuzz_options += ['glib=disabled']
+    harfbuzz_options += ['glib=disabled', 'freetype=disabled']
 endif
 harfbuzz_dep = dependency('harfbuzz', version: '>= 1.2.3', required: get_option('harfbuzz'),
                           fallback: ['harfbuzz', 'libharfbuzz_dep'],
